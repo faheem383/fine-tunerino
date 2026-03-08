@@ -1,227 +1,67 @@
-# GPT-2 MLOps Pipeline on Azure Kubernetes Service (AKS)
+# Fine-Tunerino
 
-![MLOps](https://img.shields.io/badge/MLOps-End--to--End-blue)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-Orchestrated-blue)
-![Azure](https://img.shields.io/badge/Azure-AKS-0078D4)
-![Python](https://img.shields.io/badge/Python-3.10-green)
+A GPT-2 fine-tuning notebook that teaches a pre-trained language model new knowledge from custom PDF documents. This is the **local development starting point** for the MLOps capstone project.
 
-## Project Overview
+## What It Does
 
-This project demonstrates a **production-style MLOps pipeline** that
-automatically:
+1. **Extracts text** from PDF files in `data/pdfs/`
+2. **Tokenizes** the text using the GPT-2 tokenizer
+3. **Fine-tunes** the pre-trained GPT-2 model on your documents
+4. **Generates text** using the fine-tuned model
 
-1.  Processes uploaded PDF documents
-2.  Extracts and cleans text
-3.  Fine-tunes a GPT-2 language model
-4.  Stores model artifacts
-5.  Deploys the trained model as a scalable API
-6.  Monitors the system using observability tools
+## Quick Start
 
-All compute workloads run on **Azure Kubernetes Service (AKS)** using
-containerized workloads.
+### 1. Set up the environment
 
-------------------------------------------------------------------------
+```bash
+python -m venv .venv
+source .venv/bin/activate   # macOS/Linux
+pip install -r requirements.txt
+```
 
-## Architecture
+### 2. Add your training data
 
-Pipeline workflow:
+Place PDF files in the `data/pdfs/` folder. A sample `declaration.pdf` is included.
 
-User Upload PDF\
-↓\
-Azure Blob Storage\
-↓\
-Event Trigger (Event Grid / Webhook)\
-↓\
-Preprocessing Job (Kubernetes Pod)\
-↓\
-Model Training Job (GPU Pod)\
-↓\
-Model Artifact Storage\
-↓\
-Inference API Deployment\
-↓\
-Monitoring (Prometheus + Grafana + Loki)
+### 3. Run the notebook
 
-------------------------------------------------------------------------
+```bash
+jupyter notebook main.ipynb
+```
 
-## Key Components
+Run all cells in order. Training takes a few minutes on CPU, faster on GPU.
 
-### Document Ingestion
+## Project Structure
 
-PDF documents are uploaded and stored in **Azure Blob Storage**.
+```
+fine-tunerino/
+├── main.ipynb          # Training notebook (run this)
+├── requirements.txt    # Python dependencies
+└── data/
+    └── pdfs/
+        └── declaration.pdf   # Sample training document
+```
 
-### Data Preprocessing
+## How It Maps to MLOps
 
-Kubernetes jobs extract and clean text from PDF files using:
+This notebook is the prototype for an automated pipeline on Azure:
 
--   pdfplumber
--   PyPDF
--   pandas
--   HuggingFace datasets
+| Notebook Step | MLOps Stage | Azure Service |
+|---|---|---|
+| Extract PDF text | Data Pre-processing | AKS Pod (CPU) |
+| Tokenize & prepare | Data Pipeline | AKS Pod (CPU) |
+| Configure training | Experiment Config | AML Workspace |
+| Fine-tune model | Model Training | AKS Pod (GPU/CPU) |
+| Generate text | Model Serving | AKS Inference Endpoint |
 
-### Model Training
+## Tips
 
-Fine-tuning GPT‑2 using:
+- **Documents must be in English** (GPT-2 was trained on English text)
+- **Don't ask questions** - start the sentence: use `"Declaration: X is"` instead of `"Who is X?"`
+- **Small datasets need more epochs** - increase `num_train_epochs` to 20+ and `learning_rate` to 2e-4 to force memorization
 
--   HuggingFace Transformers
--   PyTorch
--   GPU-enabled Kubernetes nodes
+## Dependencies
 
-Training produces:
+Key libraries: `transformers`, `torch`, `datasets`, `pypdf`, `accelerate`
 
--   model weights
--   tokenizer
--   configuration files
-
-### Model Deployment
-
-The trained model is deployed as a **FastAPI inference service** inside
-Kubernetes.
-
-Example request:
-
-POST /generate
-
-{ "text": "Artificial intelligence will" }
-
-### Monitoring
-
-Observability stack:
-
--   Prometheus (metrics)
--   Grafana (dashboards)
--   Loki (logs)
-
-Monitored metrics:
-
--   CPU usage
--   memory usage
--   request latency
--   error rate
-
-------------------------------------------------------------------------
-
-## Repository Structure
-
-mlops-gpt2-pipeline
-
-data/\
-sample_pdfs/
-
-preprocessing/\
-preprocess.py
-
-training/\
-train_gpt2.py
-
-inference/\
-api.py
-
-docker/\
-Dockerfile.training\
-Dockerfile.inference
-
-k8s/\
-training-job.yaml\
-inference-deployment.yaml\
-service.yaml
-
-monitoring/\
-prometheus.yml\
-grafana-dashboard.json
-
-SECURITY.md\
-README.md\
-requirements.txt
-
-------------------------------------------------------------------------
-
-## Deployment
-
-### Clone repository
-
-git clone https://github.com/your-repo/mlops-gpt2-pipeline.git
-
-cd mlops-gpt2-pipeline
-
-### Build Docker images
-
-docker build -t gpt2-training -f docker/Dockerfile.training .
-
-docker build -t gpt2-inference -f docker/Dockerfile.inference .
-
-### Push images
-
-docker tag gpt2-training `<registry>`{=html}/gpt2-training
-
-docker push `<registry>`{=html}/gpt2-training
-
-### Deploy to AKS
-
-kubectl apply -f k8s/training-job.yaml
-
-kubectl apply -f k8s/inference-deployment.yaml
-
-kubectl apply -f k8s/service.yaml
-
-------------------------------------------------------------------------
-
-## Testing the API
-
-curl -X POST http://`<service-ip>`{=html}/generate\
--H "Content-Type: application/json"\
--d '{"text":"Machine learning will"}'
-
-------------------------------------------------------------------------
-
-## CI/CD (Recommended)
-
-Typical pipeline:
-
-Code Commit\
-↓\
-Build Docker Image\
-↓\
-Security Scan\
-↓\
-Push Image to Registry\
-↓\
-Deploy to AKS
-
-Possible tools:
-
--   GitHub Actions
--   GitLab CI
--   Azure DevOps
-
-------------------------------------------------------------------------
-
-## Security
-
-Security best practices:
-
--   container image scanning
--   Kubernetes RBAC
--   secrets management
--   dependency vulnerability scanning
--   TLS communication
-
-See **SECURITY.md** for full details.
-
-------------------------------------------------------------------------
-
-## Technologies Used
-
-Machine Learning - HuggingFace Transformers - PyTorch - Python
-
-Infrastructure - Docker - Kubernetes - Azure Kubernetes Service (AKS)
-
-Monitoring - Prometheus - Grafana - Loki
-
-------------------------------------------------------------------------
-
-## License
-
-MIT License
-
-This project is intended for **educational and demonstration purposes**.
+See `requirements.txt` for the full list.
