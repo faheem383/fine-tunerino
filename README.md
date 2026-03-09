@@ -18,7 +18,7 @@ A GPT-2 fine-tuning notebook that teaches a pre-trained language model new knowl
 ### 1. Set up the environment
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate   # macOS/Linux
 pip install -r requirements.txt
 ```
