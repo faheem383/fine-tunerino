@@ -30,6 +30,7 @@ Place PDF files in the `data/pdfs/` folder. A sample `declaration.pdf` is includ
 ### 3. Run the notebook
 
 ```bash
+Note: Install Jupyter Notebook inside the virtual environment if not installed using #### pip install notebook.
 jupyter notebook main.ipynb
 ```
 
