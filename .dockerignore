@@ -1,0 +1,13 @@
+.venv/
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+data/
+models/
+*.ipynb_checkpoints
+gpt2-finetuned-custom-docs/
+*.md
+*.yaml

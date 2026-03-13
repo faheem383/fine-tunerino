@@ -1,3 +1,137 @@
-.venv
-venv
+# --------------------------------------------------
+# Python
+# --------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.pyd
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --------------------------------------------------
+# Jupyter Notebooks
+# --------------------------------------------------
+.ipynb_checkpoints/
+
+# --------------------------------------------------
+# ML / Data Files
+# --------------------------------------------------
+data/
+datasets/
+*.csv
+*.tsv
+*.jsonl
+*.parquet
+*.h5
+*.hdf5
+*.npz
+
+# Model artifacts
+models/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.joblib
+*.pkl
+*.model
+gpt2-finetuned-custom-docs/
+
+# HuggingFace / transformers cache
+.cache/
+huggingface/
+transformers_cache/
+
+# ML experiment tracking
+mlruns/
+wandb/
+tensorboard_logs/
+runs/
+logs/
+
+# --------------------------------------------------
+# Secrets & credentials
+# --------------------------------------------------
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Azure credentials
+.azure/
+*.azureauth
+
+# Kubernetes secrets
+secrets.yaml
+*secret*.yaml
+
+# --------------------------------------------------
+# Docker
+# --------------------------------------------------
+docker-compose.override.yml
+*.tar
+
+# --------------------------------------------------
+# Kubernetes
+# --------------------------------------------------
+*.kubeconfig
+kubeconfig
+.kube/
+
+# --------------------------------------------------
+# Terraform (if used)
+# --------------------------------------------------
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# --------------------------------------------------
+# Logs
+# --------------------------------------------------
+*.log
+logs/
+
+# --------------------------------------------------
+# IDE / Editors
+# --------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --------------------------------------------------
+# OS Files
+# --------------------------------------------------
 .DS_Store
+Thumbs.db
+
+# --------------------------------------------------
+# Testing
+# --------------------------------------------------
+.coverage
+htmlcov/
+.pytest_cache/
+
+# --------------------------------------------------
+# Temporary files
+# --------------------------------------------------
+tmp/
+temp/
+*.tmp

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpt2-api-deployment
+  namespace: gpt2-trainer-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gpt2-api
+  template:
+    metadata:
+      labels:
+        app: gpt2-api
+    spec:
+      containers:
+      - name: gpt2-api-container
+        image: acrregistryvijaya.azurecr.io/serve-api:v1
+        ports:
+        - containerPort: 8000
+
+        env:
+        - name: AZURE_STORAGE_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: azure-blob-secret
+              key: AZURE_STORAGE_CONNECTION_STRING
+
+        - name: BLOB_CONTAINER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: azure-blob-secret
+              key: BLOB_CONTAINER_NAME
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gpt2-api-service
+  namespace: gpt2-trainer-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: gpt2-api
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000

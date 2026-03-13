@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argo-webhook
+  namespace: gpt2-trainer-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: argo-webhook
+  template:
+    metadata:
+      labels:
+        app: argo-webhook
+    spec:
+      containers:
+      - name: webhook
+        image: acrregistryvijaya.azurecr.io/webhook-receiver:v1
+        ports:
+        - containerPort: 9080
+        env:
+        - name: KUBECONFIG
+          value: "/root/.kube/config"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argo-webhook-svc
+  namespace: gpt2-trainer-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: argo-webhook
+  ports:
+  - port: 9080
+    targetPort: 9080

@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: pdf-trainer-workflow   # <-- This is what your webhook will call
+  namespace: argo
+spec:
+  entrypoint: extract-pdfs
+  templates:
+    - name: extract-pdfs
+      container:
+        image: acrregistryvijaya.azurecr.io/pdf-extractor:v1
+        command: ["python3"]
+        args: ["preprocess.py"]
+        env:
+          - name: AZURE_STORAGE_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: azure-blob-secret
+                key: AZURE_STORAGE_CONNECTION_STRING
+          - name: BLOB_CONTAINER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: azure-blob-secret
+                key: BLOB_CONTAINER_NAME
